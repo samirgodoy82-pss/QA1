@@ -4,3 +4,27 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
+
+[workflows]
+
+[[workflows.workflow]]
+name = "Start server"
+mode = "sequential"
+author = 50272304
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm start"
+
+[[workflows.workflow]]
+name = "Run tests"
+mode = "sequential"
+author = 50272304
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm test"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
