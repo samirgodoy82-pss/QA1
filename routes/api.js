@@ -1,39 +1,45 @@
-'use strict';
+"use strict";
 
-const ConvertHandler = require('../controllers/convertHandler.js');
+const ConvertHandler = require("../controllers/convertHandler.js");
 
-module.exports = function(app) {
-
+module.exports = function (app) {
   let convertHandler = new ConvertHandler();
 
-  app.get('/api/convert', (req, res) => {
+  app.get("/api/convert", (req, res) => {
+    const input = req.query.input || "";
 
-    let input = req.query.input;
-    let num = convertHandler.getNum(input);
-    let unit = convertHandler.getUnit(input);
+    const initNum = convertHandler.getNum(input);
+    const initUnit = convertHandler.getUnit(input);
 
-    if (num === 'invalid number' && unit === 'invalid unit') {
-      return res.json({ error: "invalid number and unit" });
+    // ORDEN EXACTO Y RESPUESTA EXACTA
+    const numInvalid = initNum === "invalid number";
+    const unitInvalid = initUnit === "invalid unit";
+
+    if (numInvalid && unitInvalid) {
+      return res.send("invalid number and unit");
     }
-    if (num === 'invalid number') {
-      return res.json({ error: "invalid number" });
+    if (numInvalid) {
+      return res.send("invalid number");
     }
-    if (unit === 'invalid unit') {
-      return res.json({ error: "invalid unit" });
+    if (unitInvalid) {
+      return res.send("invalid unit");
     }
 
-    let returnUnit = convertHandler.getReturnUnit(unit);
-    let returnNum = convertHandler.convert(num, unit);
-    let string = convertHandler.getString(num, unit, returnNum, returnUnit);
+    const returnNum = convertHandler.convert(initNum, initUnit);
+    const returnUnit = convertHandler.getReturnUnit(initUnit);
+    const responseString = convertHandler.getString(
+      initNum,
+      initUnit,
+      returnNum,
+      returnUnit,
+    );
 
     res.json({
-      initNum: num,
-      initUnit: unit,
-      returnNum: Number(returnNum.toFixed(5)),
-      returnUnit: returnUnit,
-      string
+      initNum,
+      initUnit,
+      returnNum,
+      returnUnit,
+      string: responseString,
     });
-
   });
-
 };
