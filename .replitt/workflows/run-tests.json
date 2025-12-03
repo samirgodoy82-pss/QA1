@@ -1,0 +1,11 @@
+{
+  "name": "Run tests",
+  "description": "Executes Mocha unit & functional tests",
+  "activationEvent": "manual",
+  "tasks": [
+    {
+      "command": "npm test",
+      "label": "Run Tests"
+    }
+  ]
+}

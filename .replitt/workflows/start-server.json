@@ -1,0 +1,11 @@
+{
+  "name": "Start server",
+  "description": "Runs the Node.js server",
+  "activationEvent": "manual",
+  "tasks": [
+    {
+      "command": "npm start",
+      "label": "Start Server"
+    }
+  ]
+}

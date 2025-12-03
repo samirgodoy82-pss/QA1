@@ -1,39 +1,38 @@
-'use strict';
+"use strict";
 
-const ConvertHandler = require('../controllers/convertHandler.js');
+const expect = require("chai").expect;
+const ConvertHandler = require("../controllers/convertHandler.js");
 
-module.exports = function(app) {
-
+module.exports = function (app) {
   let convertHandler = new ConvertHandler();
 
-  app.get('/api/convert', (req, res) => {
+  app.get("/api/convert", function (req, res) {
+    const input = req.query.input;
 
-    let input = req.query.input;
-    let num = convertHandler.getNum(input);
-    let unit = convertHandler.getUnit(input);
+    const num = convertHandler.getNum(input);
+    const unit = convertHandler.getUnit(input);
 
-    if (num === 'invalid number' && unit === 'invalid unit') {
-      return res.json({ error: "invalid number and unit" });
-    }
-    if (num === 'invalid number') {
-      return res.json({ error: "invalid number" });
-    }
-    if (unit === 'invalid unit') {
-      return res.json({ error: "invalid unit" });
+    if (num === "invalid number" && unit === "invalid unit") {
+      return res.send("invalid number and unit");
     }
 
-    let returnUnit = convertHandler.getReturnUnit(unit);
-    let returnNum = convertHandler.convert(num, unit);
-    let string = convertHandler.getString(num, unit, returnNum, returnUnit);
+    if (num === "invalid number") return res.send("invalid number");
+    if (unit === "invalid unit") return res.send("invalid unit");
+
+    const returnNum = parseFloat(convertHandler.convert(num, unit).toFixed(5));
+    const returnUnit = convertHandler.getReturnUnit(unit);
 
     res.json({
       initNum: num,
-      initUnit: unit,
-      returnNum: Number(returnNum.toFixed(5)),
-      returnUnit: returnUnit,
-      string
+      initUnit: unit === "l" ? "L" : unit,
+      returnNum,
+      returnUnit,
+      string: convertHandler.getString(
+        num,
+        unit === "l" ? "L" : unit,
+        returnNum,
+        returnUnit,
+      ),
     });
-
   });
-
 };
