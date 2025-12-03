@@ -1,20 +1,33 @@
 function ConvertHandler() {
-  this.getNum = function (input) {
-    const result = input.match(/^[^a-zA-Z]*/)[0];
+  
+  const validUnits = ['gal','l','mi','km','lbs','kg'];
+  const spelledUnits = {
+    gal: 'gallons',
+    l: 'liters',
+    mi: 'miles',
+    km: 'kilometers',
+    lbs: 'pounds',
+    kg: 'kilograms'
+  };
 
-    if (result === "") return 1;
+  // GET NUMBER
+  this.getNum = function(input) {
+    let result;
 
-    // Double fraction check
-    const fractionParts = result.split("/");
-    if (fractionParts.length > 2) return "invalid number";
+    const numMatch = input.match(/^[\d/.]+/);
+    if (!numMatch) return 1;
 
-    // Evaluate fraction or decimal
-    let number = result.includes("/")
-      ? parseFloat(fractionParts[0]) / parseFloat(fractionParts[1])
-      : parseFloat(result);
+    result = numMatch[0];
 
-    if (isNaN(number)) return "invalid number";
-    return number;
+    if (result.split('/').length > 2) return 'invalid number';
+
+    try {
+      result = eval(result);
+    } catch (e) {
+      return 'invalid number';
+    }
+
+    return isNaN(result) ? 'invalid number' : result;
   };
 
   this.getUnit = function (input) {
